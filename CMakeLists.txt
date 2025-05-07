@@ -3,4 +3,5 @@ project(relafind C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(relafind main.c)
+add_executable(relafind main.c
+        main.h)

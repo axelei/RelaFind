@@ -1,12 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "main.h"
 
 #define SHIFTS 0xff
-
-unsigned char* read_file(const char * filename, long* size);
-int detect(const unsigned char * file, long position, const char * needle);
-void shift_haystack(unsigned char haystack[], size_t size);
 
 static unsigned char* haystack;
 
@@ -27,8 +24,8 @@ int main(const int argc, const char *argv[]) {
         printf("Empty needle\n");
         return 1;
     }
-    if (size == 0) {
-        printf("File is empty\n");
+    if (size == 0 || size == -1) {
+        printf("File is empty or could not be read\n");
         return 1;
     }
 
@@ -38,15 +35,19 @@ int main(const int argc, const char *argv[]) {
     const size_t needle_len = strlen(needle);
     haystack = malloc(needle_len);
 
+    int coincidences = 0;
     for (long i = 0; i < size; i++) {
         const int offset = detect(file, i, needle);
         if (offset != -1) {
+            coincidences++;
             printf("Found at position: %ld (0x%lx) Offset was: %d\n", i, i, offset);
         }
     }
 
-    free(file);
     free(haystack);
+    free(file);
+
+    printf("Coincidences: %d\n", coincidences);
 
     return 0;
 }
